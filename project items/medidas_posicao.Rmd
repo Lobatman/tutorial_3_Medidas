@@ -1,0 +1,603 @@
+---
+title: | 
+  ![](https://i.imgur.com/SWWUQpP.png){width=500px style="display: block; margin:0 auto;"} 
+  Tutorial 3: Medidas de posição e dispersão
+author: "Victor Lobato dos Santos"
+date: "2023-05-23"
+output:
+  html_document:
+    highlight: haddock
+    includes:
+      in_header: "fever_icon.html"
+    theme: flatly
+    number_sections: yes
+    toc: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+  pdf_document:
+    toc: yes
+---
+<div class="text-justify"> 
+
+# Introdução ao módulo  
+  
+Este tutorial se trata de uma sequência de tutoriais que buscam trazer a integração da programação ao ambiente acadêmico, mais especificamente, o conhecimento do Software **R** com a disciplina de Bioestatística.  
+Iremos abordar aqui, as Medidas de posição utilizadas no conteúdo de bioestatística, entre elas iremos analisar, média aritmética, ponderada, geométrica e harmônica, além do conhecimento sobre Mediana e Moda.  
+  
+# Medidas
+  
+Medidas, possuem o objetivo de sumarizar informações existentes em um conjunto de dados númericos e quantitativos.  
+Podemos dividir as medidas em medidas de posição (ou tendência central), e medidas de dispersão (ou variabilidade). Dentre as medidas de dispersão, temos média, mediana e moda enquanto que, dentro das medidas de dispersão temos amplitude, variância, desvio padrão e erro padrão.  
+  
+# Médias  
+  
+## Média Aritmética  
+  
+Média aritmética se trata da soma de todos os elementos de uma amostra que é dividida pelo número total de elementos, sua representação se da pela equação:  
+  
+$$\bar{x} = \frac{\sum_{i=1}^{n}x1}{n}$$  
+Na IDE do RStudio, para realizar o cálculo de média aritmética, podemos usar a função ``mean()``, onde colocamos dentro dos parénteses, a variável que compõe os dados quantificados para realizar a média. Observe o exemplo:  
+  
+Suponha que, você quer saber a média do peso, em kg de cinco recém-nascidos de um hospital. O peso desses recém nascidos são respecitvamente 2.5kg, 3.75kg, 2.25kg, 3.45kg, e 3.75kg.  
+  
+O primeiro passo, é criar um vetor para estes dados:  
+```{r, message=FALSE}
+peso_recem_nascidos <- c(2.5, 3.75, 2.25, 3.45, 3.75)
+peso_recem_nascidos
+```
+Após ter sido criado um vetor com os dados, calculamos a média:  
+  
+```{r, message=FALSE}
+mean(peso_recem_nascidos)
+
+```
+Obtivemos então que, a média aritmética do peso em kg de 5 recém nascidos de um hospita, é de 3.14kg.  
+  
+## Média Ponderada  
+  
+A média ponderada é utilizada quando se possui elementos com pesos diferentes em um conjunto de dados. A diferença da média aritmética para a média ponderada está na diferença de peso dos elementos, em uma média aritmética todos os dados apresentam pesos iguais, já na média ponderada cada elemento possui um peso determinado. 
+A equação matetmática para média ponderada se da por:  
+
+$$\bar{x} = \frac{\sum_{i=1}^{n} fixi}{\sum_{i=1}^{n} fi} = \frac{f_{i}x_{i} + f_{2}x_{2} + f_{3}x_{3} + ... f_{n}x_{n}}{f_{1} + f_{2} + f_{3} + ... f_{n}}$$
+Na IDE do RStudio, podemos calcular a média ponderada através da função ``wigthted.mean()``. Com essa função, é possível especificar o peso de cada elemento existente dentro de uma amostragem. Vamos utilizar o seguinte exemplo:  
+  
+Suponha que em uma turma de escola, foram dadas 3 avaliações e cada uma possui pesos diferentes. Um aluno teve respectivamente as notas 80, 85 e 95 e os pesos dessas notas são respectivamente 6, 3 e 1. Como podemos saber a média ponderada dessas notas?  
+  
+O primeiro passo é criar um vetor para as notas e para os pesos:  
+```{r, message=FALSE}
+#Vetor do conjunto de dados
+notas <- c(80, 85, 95)
+
+#Vetor dos pesos 
+pesos <- c(6, 3, 1)
+
+#Calculo da média
+media_ponderada <- weighted.mean(notas, pesos)
+
+#Resultado 
+media_ponderada
+
+```
+Em seguida basta utilizar a função ``weighted.mean()`` e iremos obter a média ponderada das avaliações, que teve como resultado, 83.  
+  
+## Média para dados agrupados em classes  
+  
+A média para dados agrupados em classes é feita quando os valores da variável estão agrupados em uma tabela de frequências, assim como foi visto no tutorial anterior, no exemplo da quantidade de albumina. Nesse sentido, atribuimos a fórmula:  
+$$\bar{x} = \frac{\sum_{i=1}^{n} fixi}{\sum_{i=1}^{n} fi}$$
+Temos que *fi* representa a frequência absoluta da classe e *xi* representa o ponto médio de cada classe, assim, *fixi* se torna a multiplicação dessas duas variáveis.  
+Seguindo esta fórmula, vamos utilizar o exemplo dado no tutorial anterior:  
+Suponha que, ao estudar a quantidade de albumina no plasma sanguíneo de 25 pacientes com determinada doença, um pesquisador obteve os seguintes valores: 4.2, 4.2, 4.2, 4.3, 4.3, 4.5, 4.5, 4.5, 4.5, 4.8, 4.8, 4.8, 5.0, 5.0, 5.0, 5.0, 5.3, 5.3, 5.3, 5.5, 5.6, 5.6, 5.7, 5.8, 5.8.  
+A partir desses valores, vamos construir nossa tabela de frequências e descobrir a média para dados agrupados em classes.  
+  
+```{r, echo=TRUE, message=FALSE}
+qtd_albumina <- c(5.1, 5, 5.2, 4.5, 4.8, 4.9, 5, 5.2, 5.4, 5.1, 4.9, 5, 4.9, 5.1, 5.3, 5.1, 5.1, 5.3, 4.7, 5.3, 4.7, 5.4, 5, 5.5, 5)
+
+sort(qtd_albumina) #ordena os dados
+range(qtd_albumina) #descobre o menor e o maior número
+
+amp_total <- ceiling(max(qtd_albumina)-min(qtd_albumina))
+amp_total
+
+k <- nclass.FD(qtd_albumina)
+
+length(qtd_albumina)
+k <- ceiling((sqrt(length(qtd_albumina))))
+
+c <- amp_total / (k-1)
+
+infclass <- min(qtd_albumina)
+
+supclass <- infclass + (k*c)
+
+
+brk <- seq(infclass,supclass,c)
+
+tabela_freq_albumina_t <- table(cut(qtd_albumina,breaks = brk, right = FALSE))
+
+tabela_freq_albumina <- prop.table(tabela_freq_albumina_t)
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(kableExtra)
+
+
+tabela_formatada <- data.frame(FrequenciaAbsoluta = as.vector(tabela_freq_albumina_t),
+                               FrequenciaRelativa = as.vector(tabela_freq_albumina))
+tabela_formatada <- cbind(Intervalo = names(tabela_freq_albumina_t), tabela_formatada)
+kable(tabela_formatada, align = "c") %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  kable_styling(bootstrap_options = "condensed") %>%
+  kable_styling(bootstrap_options = "condensed")
+```
+A tabela acima, representa o código utilizado no exemplo do tutorial anterior, para criar uma tabela de frequências a partir da IDE base do R tendo como vetor ``tabela_freq_albumina``. Agora, a partir deste código, vamos realizar o nosso cálculo da média para dados agrupados em classes deste exemplo:  
+  
+```{r, message=FALSE}
+#Descobrindo a média para dados agrupados
+xi <- (brk[-1] + brk[-length(brk)]) / 2
+xi
+
+media_agrupada <- sum(xi * tabela_freq_albumina) /
+  sum(tabela_freq_albumina)
+
+media_agrupada
+```
+O resultado para a média dos dados agrupados em classes foi de 5.01. Agora, vamos entender os passos feitos para chegar até o resultado.  
+ 
+* No vetor ``xi <- (brk[-1] + brk[-length(brk)]) / 2``, como o nome dado ao vetor diz, aqui nós descobrimos o *ponto médio* (xi) das classes. Utilizamos ``brk[-1]`` para remover o primeiro elemento do vetor ``brk``, lembrando que ``brk`` representa a sequência de valores que contém os limites de cada classe na tabela de frequência. Ao adicionar ``[-1]`` em nosso código, nós removemos o limite inferior da primeira classe.  
+  
+  + Ainda no primeiro vetor, seguindo nosso código, em ``brk[-length(brk)]``, nós removemos o último elemento do vetor ``brk``, ou seja, o limite superior da última classe. Removemos o limite inferior da primeira classe em ``brk[-1]`` e o limite superior em ``brk[-length(brk)]`` para separamas cada uma das classes e respectivamente encontrar o ponto médio.  
+  
+  + Para descobrir então o ponto médio nós somamos os dois vetores criados e dividmos por 2 (``xi <- (brk[-1] + brk[-length(brk)]) / 2``), obtendo os valores: 4.45, 4.95, 5.45, 5.95 e 6.45, respectivamente de acordo com cada classe.  
+  
+* No vetor ``media_agrupada <- sum(xi * tabela_freq_albumina) / sum(tabela_freq_albumina)``, foi criado para calcular a média ponderada dos pontos médios das classes (xi) e das frequências absoluta (fi) ou seja, utilizamos para calcular *fixi*. em ``xi`` nós temos o ponto médio de cada classe, e em ``tabela_freq_albumina`` nós temos as frequências relativas correspondentes a cada uma das classes da tabela. Tendo em vista isso, foi feito a multiplicação de xi e fi, compondo o código com ``(xi * tabela_freq_albumina)``.  
+  + Após multiplicar *fixi*, foi feito a soma dos resultados através da função ``sum()``, portanto: ``sum(xi * tabela_freq_albumina)``.  
+  
+  + Por fim, foi feito a divisão desta soma pelo total das frequências relativas (fi), finalizando este vetor: ``media_agrupada <- sum(xi * tabela_freq_albumina) / sum(tabela_freq_albumina)``  
+   
+    
+Nós calculamos a média para dados agrupados em classes, a partir de um passo a passo, utilizando técnicas básicas no R, mas é possível utilizar a função ``weighted.mean()`` para realizar este cálculo. Veja o exemplo:  
+```{r, message=FALSE}
+media_agrupada_1 <- weighted.mean(xi, tabela_freq_albumina)
+media_agrupada_1
+
+```
+Neste exemplo, conseguimos simplificar um pouco os métodos para obter a média para dados agrupados em classes. Perceba que, ainda precisamos criar o vetor ``xi <- (brk[-1] + brk[-length(brk)]) / 2``, porém podemos simplificar a segunda parte, utilzando a função ``weighted.mean()``, adicionando o vetor ``tabela_freq_albumina`` que representa o nosso **fi**. O resultado final será o mesmo. 
+  
+## Média Geométrica  
+  
+A média geométrica geralmente é utilizada para um conjunto de dados que estão em progressão geométrica. A equação que representa esta média é:  
+$$\bar{xg} = \left ( \sum_{i=1}^{n}xi \right )\tfrac{1}{n} = \sqrt{xi \cdot x2\cdot x3\cdot ...xn}$$
+  
+Na IDE do RStudio, podemos calcular a média geométrica, através das função ``prod()``.  
+Vamos utilizar o seguinte exemplo para aplicar calcular a média geométrica no Rstudio:  
+Suponha que você precise calcular a média geométrica do seguinte padrão de infecção de determinado patógeno em cinco semanas:  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(dplyr)
+
+semanas <- c(1, 2, 3, 4, 5)
+infectados <- c(3, 9, 27, 81, 243)
+
+tabela <- tibble(Semanas = semanas, "n° de infectados" = infectados)
+
+library(kableExtra)
+library(knitr)
+kable(tabela) %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  kable_styling(bootstrap_options = "condensed") %>%
+  row_spec(0, bold = TRUE) %>%
+  row_spec(1:nrow(tabela), align = "c")
+```
+  
+Para calcular a média geométrica, vamos primeiro utilizar o vetor dos dados referente ao número de infectados, e em seguida criar um vetor para a média geométrica:  
+  
+```{r, message=FALSE}
+n_infectados <- c(3, 9, 27, 81, 243)
+
+#Calculando a média Geométrica
+media_geom <- prod(n_infectados)^(1/length(n_infectados))
+
+media_geom
+```
+* Utilizamos a função ``prod()`` para multiplicar os números contidos dentro do vetor **n_infectados**.
+  + Em seguida, utilizamos o sinal de **^** para elevar o produto de todos os dados calculados no vetor n_infectados.;
+  + De acordo com a fórmula, precisamos dividir o resultado do produto por $\frac{1}{n}$, portanto, criamos a função ``(1/length(n_infectados))``, onde ``length()`` irá retornar para nós o número total de elementos contidos no vetor **n_infectados**, portanto, ao escrevermos ``1/length(n_infectados)`` estamos dividindo 1 pelo número total de dados contidos no vetor **n_infectados**  
+  + Ao elevarmos a função (utilizando o sinal **^**), considerando que elevamos por $\frac{1}{n}$, a potencia se torna essencialmente uma raiz, permitindo então chegar ao resultado da nossa raiz geométrica, que foi igual a **27**  
+    
+## Média Móvel  
+  
+A média móvel é utilizada para apresentar a tendência de uma série temporal, principalmente quando se tem dados existentes represados.  
+  
+No RStudio, podemos fazer a média móvel a partir de um conjunto de dados, através da função ``rollmean()`` presente no pacote **zoo**.  
+  
+Spuonha que você precisa calcular a média móvel da qantidade de óbitos por covid em oito dias de determinado local, de acordo com a tabela:  
+  
+```{r, echo=FALSE, message=FALSE}
+library(tidyverse)
+library(dplyr)
+
+dias <- c(1, 2, 3, 4, 5, 6, 7, 8)
+mortos <- c(25, 85, 65, 45, 95, 75, 15, 35)
+
+tabela_MM <- tibble(Dias = dias, "óbitos" = mortos)
+
+library(kableExtra)
+library(knitr)
+kable(tabela_MM) %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  kable_styling(bootstrap_options = "condensed") %>%
+  row_spec(0, bold = TRUE) %>%
+  row_spec(1:nrow(tabela_MM), align = "c")
+
+  
+  
+
+```
+
+A partir destes dados, vamos calcular a média móvel, considerando que o vetor da tabela é ``tabela_MM``:  
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(zoo)
+
+#criando o vetorde dados
+mortos <- c(25, 85, 65, 45, 95, 75, 15, 35)
+
+#calculando a média móvel
+
+media_m <- rollmean(mortos, k = 3, fill = NA)
+media_m
+```
+  
+Agora que criamos nosso vetor (``mortos``), que possui todos os dados referentes aos óbitos na tabela, precisamso calcular a média móvel.  
+Para calcular a média móvel utilizamos a função ``rollmean``, disponível dentro do pacote **zoo** e, a partir disso temos ``rollmean(mortos, k = 3, fill = NA)``.  
+
+* **x** é o vetor que possui os dados para calcular a média móvel, que nesse caso é **mortos**.  
+
+* **k** representa o número de termos que serão incluídos na média móvel, que no nosso caso é **k = 3**, demosntrando que iremos calculera  média móvel utilizando os três termos adjacentes. Ou seja, o primeiro valor da MM representa a média dos três primeiros dados presente no vetor ``mortos``, enquanto que o segundo valor é a média do segundo, terceiro e quarto dado, subsequentemente.  
+
+* **fill** demonstra qual valor deve ser preenchido nos primeiros elementos da MM (**k - 1**), antes que se tenha dados suficientes para realizar o cálculo da média. Por isso, aqui utilziamos ``fill = NA``, demonstrando que os dois primeiros valores da MM estarão ausentes.  
+  
+E por fim, temos o resultado da média móvel calculada para este exemplo, que foi: 58.33, 65, 68.33, 71.66, 61.66 e 41.66.  
+O próximo passo é criar o gráfico para nossa média móvel
+
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+
+#Criando um vetor para as observações com valores de 1 até o comprimento máximo
+
+observacoes <- 1: length(mortos)
+
+#Criando um dataframe
+
+df <- data.frame(observacoes = 1:length(mortos), mortos, media_m)
+
+# Plotando o gráfico
+ggplot(df, aes(x = observacoes)) +
+  geom_line(aes(y = mortos, color = "Óbitos")) +
+  geom_line(aes(y = media_m, color = "Média Móvel")) +
+  geom_point(aes(y = mortos), color = "black") +
+  geom_point(aes(y = media_m), color = "red") +
+  labs(title = "Óbitos por COVID-19", x = "Dias", y = "Óbitos", color = "Legenda") +
+  scale_color_manual(values = c("red", "black")) +
+  theme_minimal()
+
+```
+  
+Para a criação do nosso gráfico, utilizamos a biblioteca **ggplot2** e criamos um vetor com nome de **observacoes** onde atribuimos a ele valores de 1 até o comprimento máximo do vetor **mortos**, tendo então:``observacoes <- 1: length(mortos)``.  
+  
+O próximo passo é criar um dataframe (*df*) que possui três termos principais: *observacoes*, *mortos*, e *media_m*.  
+
+* Em *observacoes* temos a sequência dos números de 1 até o comprimento máximo (lenght) do vetor *mortos*;  
+
+* O termo *mortos* possui os valores do vetor que criamos para calcular a média móvel, enquanto que o termo *media_m* possui os valores calculados da média móvel.  
+
+  
+Agora, para *plotar* o gráfico da média móvel, iremos utilizar a função **ggplot()**, que peretence ao pacote ggplot2 e é usada para criar um objeto gráfico. Assim temos, seguindos as linhas do código para o gráfico:  
+
+* ``ggplot(df, aes(x - observacoes))``: **df** foi utilizado para chamar o data frame criado, ``aes(x - observacoes)`` mostra que o eixo x do gráfico está relacionado com a coluna *observacoes*.  
+
+Nas seguintes linhas, usamos ``geom_line()`` e ``geom_point()`` para adicionar os termos geométricos ao gráfico.  
+
+* ``geom_line(aes(y= mortos, color = "Óbitos"))``: em **geom_line()** nós adicionamos uma linha no gráfico, considerando que o eixo Y seja relacionado ao vetor *mortos*. Também, utilizamos ``color = "Óbitos"``, para representar na legenda.  
+
+* ``geom_line(aes(y = media_m, color = "Média Móvel))``: Aqui, seguimos o mesmo processo anterior, mas agora criando uma linha no gráfico tendo como base os valores de *media_m*, e utilizando ``color = "Média Móvel"`` para indicar o que se trata na legenda, representando a série temporal da média móvel.  
+
+* ``geom_point(aes(y = mortos), color = "black")``: utilizamos **geom_point()** para adicionar pontos no gráfico, nesse caso, tendo como base os valores referentes ao vetor *mortos*. Utilizamos ``color = "black"`` para adicionar a cor preta aos pontos.  
+
+* ``geom_point(aes(y = media_m), color = "red")``: Seguindo o mesmo processo anterior, aqui, adicionamos os pontos no gráfico tendo como base os dados de *media_m*, e ``color = "red"`` para adicionar a cor vermelha aos pontos.  
+
+O próximo passo para plotar o gráfico, é criar o título do gráfico e os rótulos dos eixos (x e y) do gráfico. Para isso, utilizamos a função ``labs()``, que é utilizada para definir o título ("title") de um gráfico, dessa forma temos a seguinte linha de cógito: ``labs(title = "Óbitos por COVID-19", x = "Dias", y = "Óbitos", color = "Legenda")``.  Atribuimos o nome desejado entre " " para cada um dos termos *title*, *x* e *y* que aparecerão no gráfico. 
+  
+Utilizamos a função ``scale_color-manual()`` que é utilizada para definir as cores da legenda. EM nosso gráfico, utilizamos a cor "red" para indicar a Média Móvel que está em vermelho, e a cor "black" para indicar os Óbitos que está representado de preto.  
+  
+Por último, para estilizar o gráfico de maneira mais minimalista, usamos ``theme_minimal()``. Este estilo minimalista é apenas um de vários que podem ser utilizados dentro do pacote ggplot2.
+  
+O resultado de todo este processo construído, é o gráfico de Média Móvel. 
+
+## Média Harmônica  
+  
+A média harmônica é utilizada para casos em que existe uma discrepância evidente entre os dados. Sua fórmula é dada por: 
+$$\bar{x}h = \frac{n}{\frac{1}{x1} + \frac{1}{x2} + ... \frac{1}{xn} } = \frac{n}{\sum_{i=1}^{n} \frac{1}{x1}}$$
+Para calcular a média harmônica no Rstudio, vamos utilizar o seguinte exemplo:  
+  
+Uma população estável de 100 lontras marinhas passa por um severo gargalo e é reduzida ao tamanho populacional 12 em um único ano. Qual é a medida do tamanho populacional?
+
+```{r, message=FALSE, echo=FALSE}
+library(kableExtra)
+library(knitr)
+
+ano <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
+n <- c(100, 100, 12, 10, 100, 100, 100, 100, 100, 100, 100)
+
+tabela_lontras <- tabela_MM <- tibble(Ano = ano, n = n)
+
+tabela_lontras %>%
+  kbl() %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  row_spec(0, bold = TRUE) %>%
+  row_spec(1:nrow(tabela_lontras), align = "c")
+
+
+
+```
+De acordo com o exemplo, vamos calcular a média harmônica:  
+  
+```{r, message=FALSE, warning=FALSE}
+n <- c(100, 100, 12, 10, 100, 100, 100, 100, 100, 100, 100)
+
+reciproco <- 1 / n
+
+#calculando a média harmônica
+
+media_harm <- length(n) / sum(reciproco)
+
+media_harm
+```
+
+Para calcular a média harmônica, primeiro nós criamos um vetor com nome de ``reciproco``, e dentro dele atribuimos ``1 / n``, para calcular o reciproco de cada um dos dados contidos no vetor *n*, armazenando o resultado dentro deste vetor.  
+Em seguida, criamos o vetor ``media_harm``. neste vetor criamos ``length(n) / sum(reciproco)``.  Em ``length(n)`` nós retornamos o tamanho do vetor *n* e dividimos pela soma dos valores contidos no vetor *reciproco*.  
+O resultado é o valor da nossa média harmônica.  
+  
+# Mediana  
+  
+A mediana pode ser representada como um indicativo de qual valor se apresenta no meio de um conjunto de dados ordenados, ou seja, é o valor que vem precedido e sucedido do mesmo número de observações. A fórmula da mediana é presentada por:  
+
+$$PosMd = \frac{n + 1}{2}$$
+Para se calcular a mediana de dados não agrupados em classes no RStudio, podemos utilizar a função ``median()``.  
+Suponha que queremos saber a mediana de um conjunto de amostra A e B. No conjunto A temos 2, 2, 4, 5, 6, 7, 8, e no conjunto B temos 3, 3, 4, 5, 7, 8, 9, 9.  
+O primeiro passo é criar vetores para ambos os conjuntos.  
+  
+```{r, message=FALSE, warning=FALSE}
+
+mediana_a <- c(2, 2, 4, 5, 6, 7, 8)
+mediana_b <- c(3, 3, 4, 5, 7, 8, 9, 9)
+```
+
+Após criar os vetores, basta aplicar a função para ambos:  
+  
+```{r, message=FALSE, warning=FALSE}
+median(mediana_a)
+median(mediana_b)
+
+
+```
+Temos então que a mediana para o conjunto A é 5 e a mediana para o conjunto B é 6.  
+  
+## Mediana para dados agrupados em classe
+  
+A fórmula da mediana para dados agrupados em classe é dada por: 
+
+$$Md = LiRmd + h \left ( \frac{\frac{n}{2} - Fant}{Fmd} \right )$$  
+
+* **LiRmd**: É o limite inferior do intervalo que contém a mediana; 
+
+* **h**: É a amplitude dos intervalos de classe;  
+
+* **n**: É o tamanho da amostra;  
+
+* **Fant**: É a frequência absoluta acumulada para baixo no intervalo anterior que contém a mediana;  
+
+* **Fmd**: É a frequência absoluta simples no intervalo que contém a mediana.  
+
+  
+Para exemplificar o cálculo da mediana para dados agrupados em classes no RStudio, vamos utilizar o exemplo já criado sobre a quantidade de albumina.  
+
+```{r, message=FALSE, warning=FALSE}
+freq_abs_acumulada <- cumsum(tabela_freq_albumina_t)
+freq_abs_acumulada
+```
+No exemplo da nossa tabela de frequência, construímos uma tabela de frequência a partir da quantidade de albumina no plasma sanguíneo de 25 pacientes com determinada doença. Naquele momento para nós, era interessante descobrir apenas a Frequência acumulada e a frequência relativa.  
+Mas, para calcular a mediana para dados agrupados em classes, temos que descobrir o *Fant* que indica a frequência absoluta acumulada para baixo no intervalo anterior que contém a mediana. Para isso nós criamos um novo vetor com nome de **freq_abs_acumulada**.  
+Neste vetor aplicamos a função ``cumsum()`` que é utilizada para calcular a soma acumulativa de elementos de determinado vetor ou tabela de frequências, tendo como resultado a frequência absoluta acumulada para baixo.
+  
+```{r, echo=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+
+tabela_formatada <- data.frame("Frequencia Absoluta" = as.vector(tabela_freq_albumina_t),
+                               "Frequencia Relativa" = as.vector(tabela_freq_albumina), "Frequencia Abs Baixo" = as.vector(freq_abs_acumulada))
+tabela_formatada <- cbind(Intervalo = names(tabela_freq_albumina_t), tabela_formatada)
+kable(tabela_formatada, align = "c") %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  kable_styling(bootstrap_options = "condensed") %>%
+  kable_styling(bootstrap_options = "condensed")
+
+```
+Agora, vamos criar os vetores e funções para calcular a classe da mediana de acordo com as funções criadas, utilizdas para criar esta tabela de frequências (ver o tutorial anterior).  
+
+```{r, message=FALSE, warning=FALSE}
+# Retomadno a tabela de frequéncias do exemplo
+tabela_freq_albumina_t <- table(cut(qtd_albumina, breaks = brk, right = FALSE))
+
+# identificando o intervalo que contém a mediana
+intervalo_mediana <- which.max(tabela_freq_albumina_t)
+intervalo_mediana
+
+```
+O primeiro passo é, chamar novamente o vetor que define a tabela de frequências do nosso exemplo: ``tabela_freq_albumina_t <- table(cut(qtd_albumina, breaks = brk, right = FALSE))``  
+Em seguida, criamos um vetor para descobrir em qual intervalo contém a mediana, para isso temos: ``intervalo_mediana <- which.max(tabela_freq_albumina_t). Utilizamos a função **wich.max()** para encontrar o índice que contém o valor máximo  na tabela de frequências (tabela_freq_albumina_t), correspoindente ao intervalo que contém a mediana.  
+  
+```{r, message=FALSE, warning=FALSE}
+# Encontrando o limite inferior do intervalo que contém a mediana (LiRmd)
+liRmd <- as.numeric(names(tabela_freq_albumina_t)[intervalo_mediana])
+liRmd
+```
+Para descobrir o limite inferior, uma opção rápida é visualizar o resultado do intervalo que contém a mediana e levar em consideração qual seria o limite inferior.
+Porém, para criar um script que interpret isso, podemos utilizar a função ``as.numeric()`` para converter o nome do intervalo em um valor numérico, seguido de ``names()`` para conseguir os nomes dos intervalos na tabela de frequência.  
+  
+```{r, message=FALSE, warning=FALSE}
+# Encontrando a amplitude dos intervalos de classe (h)
+h <- c[1]
+h
+```
+Para encontrar a amplitude dos intervalos de classe, criamos um vetor que chama o vetor ``c <- amp_total / (k-1)`` que utilizamos para descobrir a amplitude total da nossa tabela de frequências, no tutorial anterior.   
+  
+```{r, message=FALSE, warning=FALSE}
+# Encontrando o tamanho da amostra (n)
+n <- sum(tabela_freq_albumina_t)
+n
+
+```
+O n representa o tamanho da nossa amostra, e para descobri-la, criamos um vetor com a função ``sum()``, atribuida a variável *tabela_freq_albumina_t*, para que somasse todas as frequ~encias absolutas da tabela de frequências.  
+  
+```{r, message=FALSE, warning=FALSE}
+# Encontrando a frequência absoluta acumulada para baixo no intervalo anterior que contém a mediana (Fant)
+fant <- sum(tabela_freq_albumina_t[1:(intervalo_mediana-1)])
+fant
+```
+A frequência absoluta acumulada para baixo no intervalo anterior que contém a mediana, pode ser calculada utilizando a função ``sum()`` para somar as frequências absolutas anteriores ao intervalo que contém a mediana, e atribuimos o intervalo de ``1:(intervalo_mediana-1)`` Que nos retornará a frequência anterior.  
+  
+```{r, message=FALSE, warning=FALSE}
+# Encontrando a frequência absoluta simples no intervalo que contém a mediana (Fmd)
+fmd <- tabela_freq_albumina_t[intervalo_mediana]
+fmd
+```
+Para indentificar a frequência absoluta simples no intervalo que contém a mediana (Fmd), nós utilizamos a variável ``tabela_freq_albumina_t`` que representa a noss atabela de frequências, juntamente da variável ``intervalo_mediana``. A partir do colchete **[]**, nós acessamos o valor que corresponde ao intervalo da mediana, em nossa tabela de frequências, uma vez que sabemos que o intervalo da mediana está em **[5,5.25)**.  
+  
+```{r, message=FALSE, warning=FALSE}
+mediana <- 5 + h * ((n/2 - fant)/fmd)
+mediana
+```
+O último passo é atribuir nossos resultados a fórmula de mediana para dados agrupados em classe que é: $Md = LiRmd + h \left ( \frac{\frac{n}{2} - Fant}{Fmd} \right )$ .  
+Para isso, basta criar o script com base na fórmula, aplicando as variáveis criadas. A única diferença aqui, é que em LiRmd, nós substituímos por 5, que é o valor do LiRmd que já sabemos.  
+O resultado deste cálculo é o valor da Mediana para dados agrupados.
+
+# Moda  
+  
+A moda de um conjunto de dados, representa o valor mais frequente daquele conjunto. Para calculara a moda no RStudio, podemos fazer da seguinte forma:  
+  
+```{r, message=FALSE, warning=FALSE}
+moda_a <- c(3, 4, 4, 5, 5, 5, 6, 7, 8)
+table(moda_a)
+```
+Primeiro, nós criamos um vetor com o conjunto de dados que queremos descobrir a moda. O método mais fácil, porém não tão prático, dependendo do tamanho do seu conjunto de dados, é utilizar a função ``table()``, que vai criar uma tabela, com a quantidade de vezes que cada um dos números dentro do conjunto de dados é repetido.
+ 
+```{r, message=FALSE, warning=FALSE}
+moda_calculo <- subset(table(moda_a), table(moda_a) == max (table(moda_a)))
+moda_calculo
+```
+Outro método para descobrir a moda, é utilizar a função ``subset()`` para filtrar os dados da tabela que contém a moda e a função ``table(moda_a)`` para criar uma tabela que contém os dados do nosso vetor. 
+
+* A partir da função **subset()** e **table()**, nós utilizamos criamos nosso script. No primeiro ``table(moda_a)``, utilizamo para criar a tabela;  
+
+* Em ``table(moda_a) == max(table(moda_a))`` nós determinamos uma condição para especificar quais linhas da tabela queremos o resultado. Utilizamos ``==`` para comparar o valor da tabela com o valor máximo da mesma tabela, a partir da função ``max()``, resultando em um valor do tipo lógico que que atribui verdadeiro (TRUE) para os valores que são iguais ao número máximo, e falso (FALSE) para aqueles que não são.  
+
+* Com o ``subset`` que serve para filtrar os dados, conseguimos selecionar apenas os dados que queremos, a a partir da condição que criamos para apresentar apenas os valores maiores. 
+
+Este exemplo pode ser usado tanto para modelos **unimodais**, quanto para modelos **bimodais**.  
+  
+## Moda para dados agrupados em classes  
+  
+A moda para dadosa grupados em classes é representada pela fórmula: 
+  
+$$Mo = li + \frac{_{\Delta1}}{_{\Delta1 + \Delta2}} * c$$
+
+* **li** = limite inferior da classe modal;    
+
+* $\Delta1$ = diferença entre a frequência da classe modal ea frequência da classe imedatamente anterior;  
+
+* $\Delta2$ = diferença entre q frequência da classe modal e a frequência da classe imediatamente seguinte;    
+
+* **c** = amplitude da classe modal.  
+
+Para aplicar esta fórmula no R, vamos usar o exemplo utilizado na mediana para dados agrupados. Portanto, usaremos mais uma vez a tabela de frequências presente neste tutorial e no tutorial anterior, Seguindo o passo a passo abaixo:
+
+```{r, message=FALSE, warning=FALSE}
+#Retomadno a tabela de frequéncias do exemplo
+tabela_freq_albumina_t <- table(cut(qtd_albumina, breaks = brk, right = FALSE))
+```
+Como iremos utilizar o exemplo da nossa tabela de frequências da quantidade de albumina presente no sangue de 25 pacientes, o primeiro passo é chamar o vetor desta tabela.  
+
+```{r, message=FALSE, warning=FALSE}
+#Encontrando o indice da classe da modal
+indice_moda <- which.max(tabela_freq_albumina_t)
+indice_moda
+
+```
+Para encontrar o indice modal, nós utilizamos a mesma função para encontrar o intervalo da mediana. A partir da função **which.max**, encontramos o índice do valor mpaximo contido na tabela.  
+  
+```{r, message=FALSE, warning=FALSE}
+#Encontrando a frequência modal
+frequencia_modal <- tabela_freq_albumina_t[indice_moda]
+frequencia_modal
+```
+Um dos passos necessários, é criar um vetor para encontrar o indice modal, perceba que este passo também é igual ao feito no calculo da mediana para dados agrupados, a única diferença é que mudamos o vetor.  
+Como a variável *indice_moda* atribui o índice da classe modal, quando criamos ``tabela_freq_albumina_t[indice_moda]``, nós estamos buscando na tabela, o valor que corresponde ao nosso *indice_moda* na tabela, retornando a frequência absoluta da classe modal. 
+
+```{r, message=FALSE, warning=FALSE}
+frequencia_anterior <- tabela_freq_albumina_t[indice_moda - 1]
+frequencia_anterior
+```
+Encontrar a frequência anteriror, é necessária para identificar o valor de $\Delta1$ que cprres´pmde a doferemã entre a freqi]emcoa da cçasse ,pdaç e a frequência da classe imediatamente anterior.  
+Portando, na função ``tabela_freq_albumina_t[indice_moda - 1]``, estamos buscando o valor que corresponde ao indice modal (*indice_moda*) e subitraindo por 1 para encontrar a classe imediatamente anterior.  
+  
+```{r, message=FALSE, warning=FALSE}
+frequencia_seguinte <- tabela_freq_albumina_t[indice_moda + 1]
+frequencia_seguinte
+```
+Assim como no passo anterior, encontrar criar um vetor para encontrar a frequência seguinte, é necessário para encontrar o valor de $\Delta2$ que corresponde a diferença entre a frequência da classse modal e a frequência da classe imediatamente seguinte.  
+Portanto, na função ``tabela_freq_albumina_t[indice_moda + 1]``, estamos buscando o valor correspondente ao indice modal (*indice_moda*) e somando por 1 para encontrar a classe imediatamente seguinte.  
+
+```{r, message=FALSE, warning=FALSE}
+amplitude_modal <- c[1]
+amplitude_modal
+
+```
+Para encontrar a amplitude modal, foi usado a mesma função para encontrar a amplitude dos intervalos de classe no exemplo da mediana para dados agrupados, em que usamos um vetor que chama a variável ``c <- amp_total / (k-1)`` criada para descobrir a amplitude total da nossa tabela de frequências, no tutorial anterior. 
+
+```{r, message=FALSE, warning=FALSE}
+delta1 <- frequencia_modal - frequencia_anterior
+delta1
+```
+Como $\Delta1$ significa a diferença entre a frequência da classe modal (*frequencia_modal*) e a frequência da classe imediatamente anterior (*frequencia_anterior*), basta subtrair essas duas variáveis.  
+
+```{r, message=FALSE, warning=FALSE}
+delta2 <- frequencia_modal - frequencia_seguinte
+delta2
+
+```
+Da mesma forma, $\Delta2$ representa a diferença entre a frequência da classe modal (*frequencia_modal*) e a frequência da classe imediatemente seguinte (*frequencia_seguinte*), portanto, subtraimos essas duas variáveis.  
+  
+```{r, message=FALSE, warning=FALSE}
+moda_agrupada <- brk[indice_moda] + (delta1 / (delta1 + delta2)) * amplitude_modal
+moda_agrupada
+```
+Por fim, adequamos as variáveis criadas na nossa fórmula de moda para dados agrupados em classes $Mo = li + \frac{_{\Delta1}}{_{\Delta1 + \Delta2}} * c$
+
+Seguindo os passos da fórmula temos: 
+
+* **brk**: É a variável que criamos no tutorial anterior, para a tabela de frequências que armazena os limites das classes em um conjunto de dados agrupados em classes (brk <- seq(infclass,supclass,c). Para dúvidas, reveja o tutorial anterior;  
+
+* **indice_moda**: É a variável criada para conter o indice da classe modal;  
+
+* **delta1**: É a variável que representa a diferença entre a frequência da classe modal e a frequência da classe imediatamente anterior;  
+
+* **delta2** É a variável que representa a diferença entre a frequência da classe modal e a frequência da classe imediatamente seguinte;  
+
+* **amplitude_modal**: É a variável que representa a amplitude modal;  
+  
+Tendo em vista todas essas variáveis, só precisamos substituir e adequar a fórmula. O resultado será o valor da moda para dados agrupados em classes.  
+</div>
