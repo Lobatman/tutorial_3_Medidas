@@ -3022,6 +3022,8 @@ variáveis</strong>, no tópico <strong>7.1</strong></p>
 <p>Seguindo os passos de criação deste exemplo de tabela de frequências,
 precisamos descobrir quais são os pontos médios de cada classe. Para
 isso, utilizaremos a seguinte função:</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" tabindex="-1"></a>ponto_medio_classes <span class="ot">&lt;-</span> (brk[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">+</span> brk[<span class="sc">-</span><span class="fu">length</span>(brk)]) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb83-2"><a href="#cb83-2" tabindex="-1"></a>ponto_medio_classes</span></code></pre></div>
 <pre><code>## [1] 4.625 4.875 5.125 5.375 5.625</code></pre>
 <p>Para calcular o ponto médio de cada uma das classes da nossa tabela,
 seguimos os seguintes passos:</p>
@@ -3142,8 +3144,8 @@ partir de uma tabela de frequência relativa. Podemos seguir para os
 próximos passos para encontrar a variância de dados agrupados em
 classes.</p>
 <p>Primeiro vamos calcular <strong>fixi</strong>:</p>
-<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" tabindex="-1"></a>soma_fixi <span class="ot">&lt;-</span> <span class="fu">sum</span>(tabela_freq_albumina_t <span class="sc">*</span> ponto_medio_classes)</span>
-<span id="cb84-2"><a href="#cb84-2" tabindex="-1"></a>soma_fixi</span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" tabindex="-1"></a>soma_fixi <span class="ot">&lt;-</span> <span class="fu">sum</span>(tabela_freq_albumina_t <span class="sc">*</span> ponto_medio_classes)</span>
+<span id="cb85-2"><a href="#cb85-2" tabindex="-1"></a>soma_fixi</span></code></pre></div>
 <pre><code>## [1] 127.375</code></pre>
 <p>Neste passo, para descobrir a soma da multiplicação de
 <strong>fi</strong> e <strong>xi</strong>, nós utilizamos a função
@@ -3153,8 +3155,8 @@ multiplicamos pelo vetor referente ao ponto médio das classes, que tem
 como nome <em>ponto_medio_classes</em>. O resultado de 127.375 indica o
 a soma de nosso <em>fixi</em>.</p>
 <p>Em seguida, vamos calcular o quadrado da soma de fi(xi)²:</p>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" tabindex="-1"></a>fixi_quadrado <span class="ot">&lt;-</span> <span class="fu">sum</span>((tabela_freq_albumina_t <span class="sc">*</span> (ponto_medio_classes)<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb86-2"><a href="#cb86-2" tabindex="-1"></a>fixi_quadrado</span></code></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" tabindex="-1"></a>fixi_quadrado <span class="ot">&lt;-</span> <span class="fu">sum</span>((tabela_freq_albumina_t <span class="sc">*</span> (ponto_medio_classes)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb87-2"><a href="#cb87-2" tabindex="-1"></a>fixi_quadrado</span></code></pre></div>
 <pre><code>## [1] 650.5156</code></pre>
 <p>Sabendo que o primeiro passo da fórmula matemática é <span class="math inline">\(\sum_{i=1}^{n}fixi^2\)</span>, para descobrir
 calcular o quadrado da soma de fi(xi)², seguimos de forma parecida no
@@ -3162,8 +3164,8 @@ cálculo da soma de fixi, com a diferença de que aqui colocamos o vetor
 <em>ponto_medio_classes</em> elevado ao quadrado. O resultado é o valor
 desta soma</p>
 <p>Agora, vamos calcular a soma de nosso fi:</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" tabindex="-1"></a>soma_fi <span class="ot">&lt;-</span> <span class="fu">sum</span>(tabela_freq_albumina_t)</span>
-<span id="cb88-2"><a href="#cb88-2" tabindex="-1"></a>soma_fi</span></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" tabindex="-1"></a>soma_fi <span class="ot">&lt;-</span> <span class="fu">sum</span>(tabela_freq_albumina_t)</span>
+<span id="cb89-2"><a href="#cb89-2" tabindex="-1"></a>soma_fi</span></code></pre></div>
 <pre><code>## [1] 25</code></pre>
 <p>Aqui, para somar a nossa frequência absoluta da classe (fi) de todas
 as frequências, basta utilizar a função <code>sum</code> e incluir o
@@ -3171,9 +3173,9 @@ vetor relacionado a frequência absoluta da classe.</p>
 <p>Agora, com nossos vetores <em>soma_fixi</em>, <em>fixi_qudrado</em> e
 <em>soma_fi</em> preparados, podemos realizar o cálculo da
 variância:</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" tabindex="-1"></a>variancia_classes <span class="ot">&lt;-</span> (<span class="fu">sum</span>(fixi_quadrado <span class="sc">-</span> ((soma_fixi)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> soma_fi)) <span class="sc">/</span> </span>
-<span id="cb90-2"><a href="#cb90-2" tabindex="-1"></a>                        (soma_fi <span class="sc">-</span> <span class="dv">1</span>))</span>
-<span id="cb90-3"><a href="#cb90-3" tabindex="-1"></a>variancia_classes</span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" tabindex="-1"></a>variancia_classes <span class="ot">&lt;-</span> (<span class="fu">sum</span>(fixi_quadrado <span class="sc">-</span> ((soma_fixi)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> soma_fi)) <span class="sc">/</span> </span>
+<span id="cb91-2"><a href="#cb91-2" tabindex="-1"></a>                        (soma_fi <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb91-3"><a href="#cb91-3" tabindex="-1"></a>variancia_classes</span></code></pre></div>
 <pre><code>## [1] 0.06416667</code></pre>
 <p>De acordo com a fórmula para calcular a variância para dados
 agrupados em classes, e a fórmula criada aqui, para o Rstudio, vamos
