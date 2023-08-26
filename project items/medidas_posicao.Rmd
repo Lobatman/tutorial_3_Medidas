@@ -680,7 +680,7 @@ tabela_freq_albumina <- prop.table(tabela_freq_albumina_t)
 
 Seguindo os passos de criação deste exemplo de tabela de frequências, precisamos descobrir quais são os pontos médios de cada classe. Para isso, utilizaremos a seguinte função:  
 
-```{r, echo=FALSE, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 ponto_medio_classes <- (brk[-1] + brk[-length(brk)]) / 2
 ponto_medio_classes
 ```
