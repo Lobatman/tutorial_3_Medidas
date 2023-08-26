@@ -2928,6 +2928,278 @@ adequar a fórmula. O resultado será o valor da moda para dados agrupados
 em classes.</p>
 </div>
 </div>
+<div id="medidas-de-dispersão" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Medidas de
+dispersão</h1>
+<p>A partir de agora, aprenderemos a realizar calculos sobre medidas de
+dispersão através do Rstudio.</p>
+<div id="amplitude-total" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Amplitude Total</h2>
+<p>Para descobrir uma amplitude total, basta calcularmos o valor máximo
+menos o valor mínimo de uma amostra.</p>
+<p>Vamos supor que você queira descobrir a amplitude total presente em
+uma tabela de dados que compõem a altura em centímetros de 3
+grupos.<br />
+Para demonstrar este exemplo, vamos carregar esta tabela:</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" tabindex="-1"></a>amplitude_exemplo <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;amplitudes_exemplo.csv&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>Com a tabela carregada, vamos calcular a amplitude total de uma das
+colunas:</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" tabindex="-1"></a>amplitude_total_B <span class="ot">&lt;-</span> <span class="fu">max</span>(amplitude_exemplo<span class="sc">$</span>altura_cm_B) <span class="sc">-</span> <span class="fu">min</span>(amplitude_exemplo<span class="sc">$</span>altura_cm_B)</span>
+<span id="cb72-2"><a href="#cb72-2" tabindex="-1"></a></span>
+<span id="cb72-3"><a href="#cb72-3" tabindex="-1"></a>amplitude_total_B</span></code></pre></div>
+<pre><code>## [1] 7</code></pre>
+<p>Perceba que para descobrir a amplitude total de forma simples,
+utilizamos a função <code>max</code>, selecionando o valor máximo coluna
+desejada e em seguida utilizamos o sinal de subtração e a função
+<code>min</code> para selecionar o valor mínimo da coluna desejada. O
+Resultado é a amplitude máxima (em centímetros), da coluna B.</p>
+</div>
+<div id="variância" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> Variância</h2>
+<p>Em uma amostra, a variância é definida pela razão entre a soma dos
+quadrados dos desvios em relação a média e o número de observações menos
+um (grau de liberdade). A fórmula proposta para variância é:</p>
+<p><span class="math display">\[v (x) = s^2 = \frac{ \sum_{i=1}^{n}(xi -
+\bar{x})^2}{n -1} = \frac{\sum_{i=1}^{n} (\frac{\sum_{i=1}^{n}
+xi}{n})^2}{n -1}\]</span> No R, podemos calcular a variância a partir da
+função <code>var</code>.<br />
+Para exemplificar, vamos calcular a variância da segunda coluna de nossa
+tabela <em>amplitude_exemplo</em>.</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" tabindex="-1"></a>varianca_coluna_B <span class="ot">&lt;-</span> <span class="fu">var</span>(amplitude_exemplo<span class="sc">$</span>altura_cm_B)</span>
+<span id="cb74-2"><a href="#cb74-2" tabindex="-1"></a></span>
+<span id="cb74-3"><a href="#cb74-3" tabindex="-1"></a>varianca_coluna_B</span></code></pre></div>
+<pre><code>## [1] 13</code></pre>
+<p>A partir da função <code>var</code> conseguimos calcular de maneira
+simples a variância e, como visto no exemplo, a variância da coluna B é
+igual a 13.</p>
+<div id="variância-para-dados-agrupados-em-classes" class="section level3" number="6.2.1">
+<h3><span class="header-section-number">6.2.1</span> Variância para
+dados agrupados em classes</h3>
+<p>Com base no mesmo conceito de variância, a fórmula matemática da
+variância para dados agrupados em classes é:</p>
+<p><span class="math display">\[s^2 \frac{\sum_{i=1}^{n} fixi^2 -
+\frac{(\sum_{i=1}^{n} fixi)^2}{\sum_{i=1}^{n} fi}}{\sum_{i=1}^{n} fi -
+1}\]</span> Onde <strong>fi</strong> é a frequência da classe e
+<strong>xi</strong> é o ponto médio da classe.</p>
+<p>Para calcular a variância de dados agrupados em classes no Rstudio,
+vamos utilizar a tabela de frequência já citada neste e no tutorial
+anterior. Lembra da forma de construção da tabela de frequências que
+aprendemos no tutorial 2, no tópico <strong>7.1 Passo 1: Criando e
+transformando os dados de uma tabela</strong>? Iremos relembrar os
+passos da criação dela aqui, para calcularmos a variância.<br />
+Portanto, vamos nos atentar aos passos de construção da tabela de
+frequências. Caso queira relembrar a explicação, visite o
+<strong>tutorial 2: O que é estatística? Unidade, dado estatístico e
+variáveis</strong>, no tópico <strong>7.1</strong></p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" tabindex="-1"></a>qtd_albumina <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">5.1</span>, <span class="dv">5</span>, <span class="fl">5.2</span>, <span class="fl">4.5</span>, <span class="fl">4.8</span>, <span class="fl">4.9</span>, <span class="dv">5</span>, <span class="fl">5.2</span>, <span class="fl">5.4</span>, <span class="fl">5.1</span>, <span class="fl">4.9</span>, <span class="dv">5</span>, <span class="fl">4.9</span>, <span class="fl">5.1</span>, <span class="fl">5.3</span>, <span class="fl">5.1</span>, <span class="fl">5.1</span>, <span class="fl">5.3</span>, <span class="fl">4.7</span>, <span class="fl">5.3</span>, <span class="fl">4.7</span>, <span class="fl">5.4</span>, <span class="dv">5</span>, <span class="fl">5.5</span>, <span class="dv">5</span>)</span>
+<span id="cb76-2"><a href="#cb76-2" tabindex="-1"></a></span>
+<span id="cb76-3"><a href="#cb76-3" tabindex="-1"></a><span class="fu">sort</span>(qtd_albumina) <span class="co">#ordena os dados</span></span></code></pre></div>
+<pre><code>##  [1] 4.5 4.7 4.7 4.8 4.9 4.9 4.9 5.0 5.0 5.0 5.0 5.0 5.1 5.1 5.1 5.1 5.1 5.2 5.2
+## [20] 5.3 5.3 5.3 5.4 5.4 5.5</code></pre>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" tabindex="-1"></a><span class="fu">range</span>(qtd_albumina) <span class="co">#descobre o menor e o maior número</span></span></code></pre></div>
+<pre><code>## [1] 4.5 5.5</code></pre>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" tabindex="-1"></a>amp_total <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(<span class="fu">max</span>(qtd_albumina)<span class="sc">-</span><span class="fu">min</span>(qtd_albumina))</span>
+<span id="cb80-2"><a href="#cb80-2" tabindex="-1"></a></span>
+<span id="cb80-3"><a href="#cb80-3" tabindex="-1"></a></span>
+<span id="cb80-4"><a href="#cb80-4" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">nclass.FD</span>(qtd_albumina)</span>
+<span id="cb80-5"><a href="#cb80-5" tabindex="-1"></a></span>
+<span id="cb80-6"><a href="#cb80-6" tabindex="-1"></a><span class="fu">length</span>(qtd_albumina)</span></code></pre></div>
+<pre><code>## [1] 25</code></pre>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">ceiling</span>((<span class="fu">sqrt</span>(<span class="fu">length</span>(qtd_albumina))))</span>
+<span id="cb82-2"><a href="#cb82-2" tabindex="-1"></a></span>
+<span id="cb82-3"><a href="#cb82-3" tabindex="-1"></a>c <span class="ot">&lt;-</span> amp_total <span class="sc">/</span> (k<span class="dv">-1</span>)</span>
+<span id="cb82-4"><a href="#cb82-4" tabindex="-1"></a></span>
+<span id="cb82-5"><a href="#cb82-5" tabindex="-1"></a>infclass <span class="ot">&lt;-</span> <span class="fu">min</span>(qtd_albumina)</span>
+<span id="cb82-6"><a href="#cb82-6" tabindex="-1"></a></span>
+<span id="cb82-7"><a href="#cb82-7" tabindex="-1"></a>supclass <span class="ot">&lt;-</span> infclass <span class="sc">+</span> (k<span class="sc">*</span>c)</span>
+<span id="cb82-8"><a href="#cb82-8" tabindex="-1"></a></span>
+<span id="cb82-9"><a href="#cb82-9" tabindex="-1"></a></span>
+<span id="cb82-10"><a href="#cb82-10" tabindex="-1"></a>brk <span class="ot">&lt;-</span> <span class="fu">seq</span>(infclass,supclass,c)</span>
+<span id="cb82-11"><a href="#cb82-11" tabindex="-1"></a></span>
+<span id="cb82-12"><a href="#cb82-12" tabindex="-1"></a>tabela_freq_albumina_t <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="fu">cut</span>(qtd_albumina,<span class="at">breaks =</span> brk, <span class="at">right =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb82-13"><a href="#cb82-13" tabindex="-1"></a></span>
+<span id="cb82-14"><a href="#cb82-14" tabindex="-1"></a>tabela_freq_albumina <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabela_freq_albumina_t)</span></code></pre></div>
+<p>Seguindo os passos de criação deste exemplo de tabela de frequências,
+precisamos descobrir quais são os pontos médios de cada classe. Para
+isso, utilizaremos a seguinte função:</p>
+<pre><code>## [1] 4.625 4.875 5.125 5.375 5.625</code></pre>
+<p>Para calcular o ponto médio de cada uma das classes da nossa tabela,
+seguimos os seguintes passos:</p>
+<ul>
+<li><p><strong>Passo 1:</strong> Utilizamos o vetor <em>brk</em> que
+continha os limites das classes. Lembrando que esses limites foram
+calculados anteriormente utilizando a função <code>seq()</code> para
+criar intervalos entre o limite inferior e o limte superior.</p></li>
+<li><p><strong>Passo 2:</strong> a partir do código
+<code>(brk[-1] + brk[-length(brk)]) / 2</code> nós fizemos uma “adição
+vetorial” entre dois subcojuntos do nosso vetor <em>brk</em>.</p></li>
+<li><p>Em <code>brk[-1]</code> nós temos todos os elementos que estão
+dentro de <em>brk</em> com exceção do primeiro, que representa o limite
+inferior da classe.</p></li>
+<li><p>Em <code>brk[-length(brk)]</code> nós apresentamos todos os
+elementos que estão presentes dentro do vetor <strong>brk</strong>, com
+exceção do último, que representa o limite superior da última
+classe.</p></li>
+<li><p>A partir destes dois subconjuntos, nós utilizamos o sinao de soma
+para somar o limite inferior e o limite superior</p></li>
+<li><p><strong>Passo 3:</strong> Por fim, nós dividimos por 2
+(<code>/ 2</code>) para descobrir o ponto médio de cada uma das classes.
+Como temos um conjunto com cinco classes, este cálculo é feito para cada
+uma das classes.</p></li>
+</ul>
+<table class=" lightable-classic table table-condensed table table-condensed" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+Intervalo
+</th>
+<th style="text-align:center;">
+FrequenciaAbsoluta
+</th>
+<th style="text-align:center;">
+FrequenciaRelativa
+</th>
+<th style="text-align:center;">
+xi
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+[4.5,4.75)
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+0.12
+</td>
+<td style="text-align:center;">
+4.625
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+[4.75,5)
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+0.16
+</td>
+<td style="text-align:center;">
+4.875
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+[5,5.25)
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+0.48
+</td>
+<td style="text-align:center;">
+5.125
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+[5.25,5.5)
+</td>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+0.20
+</td>
+<td style="text-align:center;">
+5.375
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+[5.5,5.75)
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0.04
+</td>
+<td style="text-align:center;">
+5.625
+</td>
+</tr>
+</tbody>
+</table>
+<p>Com o entendimento de como calcular o ponto médio da classe (xi) a
+partir de uma tabela de frequência relativa. Podemos seguir para os
+próximos passos para encontrar a variância de dados agrupados em
+classes.</p>
+<p>Primeiro vamos calcular <strong>fixi</strong>:</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" tabindex="-1"></a>soma_fixi <span class="ot">&lt;-</span> <span class="fu">sum</span>(tabela_freq_albumina_t <span class="sc">*</span> ponto_medio_classes)</span>
+<span id="cb84-2"><a href="#cb84-2" tabindex="-1"></a>soma_fixi</span></code></pre></div>
+<pre><code>## [1] 127.375</code></pre>
+<p>Neste passo, para descobrir a soma da multiplicação de
+<strong>fi</strong> e <strong>xi</strong>, nós utilizamos a função
+<code>sum</code>, coletamos o vetor referente a nossa frequência
+absoluta que tem o nome de <em>tabela_frew_albumina_t</em> e
+multiplicamos pelo vetor referente ao ponto médio das classes, que tem
+como nome <em>ponto_medio_classes</em>. O resultado de 127.375 indica o
+a soma de nosso <em>fixi</em>.</p>
+<p>Em seguida, vamos calcular o quadrado da soma de fi(xi)²:</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" tabindex="-1"></a>fixi_quadrado <span class="ot">&lt;-</span> <span class="fu">sum</span>((tabela_freq_albumina_t <span class="sc">*</span> (ponto_medio_classes)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb86-2"><a href="#cb86-2" tabindex="-1"></a>fixi_quadrado</span></code></pre></div>
+<pre><code>## [1] 650.5156</code></pre>
+<p>Sabendo que o primeiro passo da fórmula matemática é <span class="math inline">\(\sum_{i=1}^{n}fixi^2\)</span>, para descobrir
+calcular o quadrado da soma de fi(xi)², seguimos de forma parecida no
+cálculo da soma de fixi, com a diferença de que aqui colocamos o vetor
+<em>ponto_medio_classes</em> elevado ao quadrado. O resultado é o valor
+desta soma</p>
+<p>Agora, vamos calcular a soma de nosso fi:</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" tabindex="-1"></a>soma_fi <span class="ot">&lt;-</span> <span class="fu">sum</span>(tabela_freq_albumina_t)</span>
+<span id="cb88-2"><a href="#cb88-2" tabindex="-1"></a>soma_fi</span></code></pre></div>
+<pre><code>## [1] 25</code></pre>
+<p>Aqui, para somar a nossa frequência absoluta da classe (fi) de todas
+as frequências, basta utilizar a função <code>sum</code> e incluir o
+vetor relacionado a frequência absoluta da classe.</p>
+<p>Agora, com nossos vetores <em>soma_fixi</em>, <em>fixi_qudrado</em> e
+<em>soma_fi</em> preparados, podemos realizar o cálculo da
+variância:</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" tabindex="-1"></a>variancia_classes <span class="ot">&lt;-</span> (<span class="fu">sum</span>(fixi_quadrado <span class="sc">-</span> ((soma_fixi)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> soma_fi)) <span class="sc">/</span> </span>
+<span id="cb90-2"><a href="#cb90-2" tabindex="-1"></a>                        (soma_fi <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb90-3"><a href="#cb90-3" tabindex="-1"></a>variancia_classes</span></code></pre></div>
+<pre><code>## [1] 0.06416667</code></pre>
+<p>De acordo com a fórmula para calcular a variância para dados
+agrupados em classes, e a fórmula criada aqui, para o Rstudio, vamos
+identificar os passos:</p>
+<ul>
+<li><p><strong>Passo 1 </strong>: Primeiro, nós abrimos nossa fórmula
+com a função <code>sum</code>, pois queremos que ao final, ocorra a soma
+de todos os valores calculados ali dentro. Em seguida, atribuimos o
+vetor referente a primeira parte da fórmula matemática (<span class="math inline">\(\sum_{i=1}^{n}fixi^2\)</span>) que é
+<em>fixi_quadrado</em> e subtraímos pelo segundo passo da
+fórmula.</p></li>
+<li><p><strong>Passo 2</strong>: O segundo passo da fórmula matemática
+desta variância, se refere a <span class="math inline">\(\frac{(\sum_{i=1}^{n} fixi)^2}{\sum_{i=1}^{n}
+fi}\)</span>. Para isso, nós atribuimos o vetor <em>soma_fixi</em> que
+correspondia a somatória de fixi, elevamos ao quadrado (<code>^2</code>)
+e dividmos pelo vetor <em>soma_fi</em> que corresponde a somatória de
+fi.</p></li>
+<li><p><strong>Passo 3</strong>: Por fim, seguindo a lógica da fórmula
+matemática, nós dividimos o resultado dos passos anteriores por <span class="math inline">\(\sum_{i=1}^{n} fi - 1\)</span> que corresponde ao
+nosso vetor <em>soma_fi</em> menos (-) 1.</p></li>
+</ul>
+<p>O resultado de tudo isso é a variância para dados agrupados em
+classe, que neste exemplo foi igual a 0.06416667</p>
+</div>
+</div>
+</div>
 </div>
 
 

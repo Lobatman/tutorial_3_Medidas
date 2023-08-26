@@ -600,4 +600,164 @@ Seguindo os passos da fórmula temos:
 * **amplitude_modal**: É a variável que representa a amplitude modal;  
   
 Tendo em vista todas essas variáveis, só precisamos substituir e adequar a fórmula. O resultado será o valor da moda para dados agrupados em classes.  
+
+# Medidas de dispersão  
+  
+A partir de agora, aprenderemos a realizar calculos sobre medidas de dispersão através do Rstudio.  
+
+## Amplitude Total  
+Para descobrir uma amplitude total, basta calcularmos o valor máximo menos o valor mínimo de uma amostra.  
+
+Vamos supor que você queira descobrir a amplitude total presente em uma tabela de dados que compõem a altura em centímetros de 3 grupos.  
+Para demonstrar este exemplo, vamos carregar esta tabela: 
+
+```{r, message=FALSE, warning=FALSE}
+amplitude_exemplo <- read.csv("amplitudes_exemplo.csv", sep = ";", header = TRUE)
+
+```
+
+Com a tabela carregada, vamos calcular a amplitude total de uma das colunas:  
+
+```{r, message=FALSE, warning=FALSE}
+amplitude_total_B <- max(amplitude_exemplo$altura_cm_B) - min(amplitude_exemplo$altura_cm_B)
+
+amplitude_total_B
+```
+Perceba que para descobrir a amplitude total de forma simples, utilizamos a função ``max``, selecionando o valor máximo coluna desejada e em seguida utilizamos o sinal de subtração e a função ``min`` para selecionar o valor mínimo da coluna desejada. O Resultado é a amplitude máxima (em centímetros), da coluna B.  
+
+## Variância  
+
+Em uma amostra, a variância é definida pela razão entre a soma dos quadrados dos desvios em relação a média e o número de observações menos um (grau de liberdade). A fórmula proposta para variância é:  
+
+$$v (x) = s^2 = \frac{ \sum_{i=1}^{n}(xi - \bar{x})^2}{n -1} = \frac{\sum_{i=1}^{n} (\frac{\sum_{i=1}^{n} xi}{n})^2}{n -1}$$
+No R, podemos calcular a variância a partir da função ``var``.  
+Para exemplificar, vamos calcular a variância da segunda coluna de nossa tabela *amplitude_exemplo*.  
+
+```{r, message=FALSE, warning=FALSE}
+varianca_coluna_B <- var(amplitude_exemplo$altura_cm_B)
+
+varianca_coluna_B
+```
+A partir da função ``var`` conseguimos calcular de maneira simples a variância e, como visto no exemplo, a variância da coluna B é igual a 13.  
+  
+### Variância para dados agrupados em classes  
+
+Com base no mesmo conceito de variância, a fórmula matemática da variância para dados agrupados em classes é:  
+
+$$s^2 \frac{\sum_{i=1}^{n} fixi^2 - \frac{(\sum_{i=1}^{n} fixi)^2}{\sum_{i=1}^{n} fi}}{\sum_{i=1}^{n} fi - 1}$$
+Onde **fi** é a frequência da classe e **xi** é o ponto médio da classe.  
+
+Para calcular a variância de dados agrupados em classes no Rstudio, vamos utilizar a tabela de frequência já citada neste e no tutorial anterior. Lembra da forma de construção da tabela de frequências que aprendemos no tutorial 2, no tópico **7.1 Passo 1: Criando e transformando os dados de uma tabela**? Iremos relembrar os passos da criação dela aqui, para calcularmos a variância.  
+Portanto, vamos nos atentar aos passos de construção da tabela de frequências. Caso queira relembrar a explicação, visite o **tutorial 2: O que é estatística? Unidade, dado estatístico e variáveis**, no tópico **7.1**  
+
+```{r, echo=TRUE, message=FALSE}
+qtd_albumina <- c(5.1, 5, 5.2, 4.5, 4.8, 4.9, 5, 5.2, 5.4, 5.1, 4.9, 5, 4.9, 5.1, 5.3, 5.1, 5.1, 5.3, 4.7, 5.3, 4.7, 5.4, 5, 5.5, 5)
+
+sort(qtd_albumina) #ordena os dados
+range(qtd_albumina) #descobre o menor e o maior número
+
+amp_total <- ceiling(max(qtd_albumina)-min(qtd_albumina))
+
+
+k <- nclass.FD(qtd_albumina)
+
+length(qtd_albumina)
+k <- ceiling((sqrt(length(qtd_albumina))))
+
+c <- amp_total / (k-1)
+
+infclass <- min(qtd_albumina)
+
+supclass <- infclass + (k*c)
+
+
+brk <- seq(infclass,supclass,c)
+
+tabela_freq_albumina_t <- table(cut(qtd_albumina,breaks = brk, right = FALSE))
+
+tabela_freq_albumina <- prop.table(tabela_freq_albumina_t)
+```
+
+Seguindo os passos de criação deste exemplo de tabela de frequências, precisamos descobrir quais são os pontos médios de cada classe. Para isso, utilizaremos a seguinte função:  
+
+```{r, echo=FALSE, message=FALSE}
+ponto_medio_classes <- (brk[-1] + brk[-length(brk)]) / 2
+ponto_medio_classes
+```
+Para calcular o ponto médio de cada uma das classes da nossa tabela, seguimos os seguintes passos:  
+
+* **Passo 1:** Utilizamos o vetor *brk* que continha os limites das classes. Lembrando que esses limites foram calculados anteriormente utilizando a função `seq()` para criar intervalos entre o limite inferior e o limte superior.  
+
+* **Passo 2:** a partir do código `(brk[-1] + brk[-length(brk)]) / 2` nós fizemos uma "adição vetorial" entre dois subcojuntos do nosso vetor *brk*. 
+
++ Em `brk[-1]` nós temos todos os elementos que estão dentro de *brk* com exceção do primeiro, que  representa o limite inferior da classe.  
+
++ Em `brk[-length(brk)]` nós apresentamos todos os elementos que estão presentes dentro do vetor **brk**, com exceção do último, que representa o limite superior da última classe.  
+
++ A partir destes dois subconjuntos, nós utilizamos o sinao de soma para somar o limite inferior e o limite superior  
+
+* **Passo 3:** Por fim, nós dividimos por 2 (`/ 2`) para descobrir o ponto médio de cada uma das classes. Como temos um conjunto com cinco classes, este cálculo é feito para cada uma das classes.  
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(kableExtra)
+
+
+tabela_formatada <- data.frame(FrequenciaAbsoluta = as.vector(tabela_freq_albumina_t),
+                               FrequenciaRelativa = as.vector(tabela_freq_albumina),
+                               xi = as.vector(ponto_medio_classes))
+tabela_formatada <- cbind(Intervalo = names(tabela_freq_albumina_t), tabela_formatada)
+kable(tabela_formatada, align = "c") %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  kable_styling(bootstrap_options = "condensed") %>%
+  kable_styling(bootstrap_options = "condensed")
+```
+
+Com o entendimento de como calcular o ponto médio da classe (xi) a partir de uma tabela de frequência relativa. Podemos seguir para os próximos passos para encontrar a variância de dados agrupados em classes.  
+  
+Primeiro vamos calcular **fixi**:  
+
+```{r, message=FALSE, warning=FALSE}
+soma_fixi <- sum(tabela_freq_albumina_t * ponto_medio_classes)
+soma_fixi
+
+```
+Neste passo, para descobrir a soma da multiplicação de **fi** e **xi**, nós utilizamos a função ``sum``, coletamos o vetor referente a nossa frequência absoluta que tem o nome de *tabela_frew_albumina_t* e multiplicamos pelo vetor referente ao ponto médio das classes, que tem como nome *ponto_medio_classes*. O resultado de 127.375 indica o a soma de nosso *fixi*.  
+
+Em seguida, vamos calcular o quadrado da soma de fi(xi)²:
+
+```{r, message=FALSE, warning=FALSE}
+fixi_quadrado <- sum((tabela_freq_albumina_t * (ponto_medio_classes)^2))
+fixi_quadrado
+```
+Sabendo que o primeiro passo da fórmula matemática é $\sum_{i=1}^{n}fixi^2$, para descobrir calcular o quadrado da soma de fi(xi)², seguimos de forma parecida no cálculo da soma de fixi, com a diferença de que aqui colocamos o vetor *ponto_medio_classes* elevado ao quadrado. O resultado é o valor desta soma
+
+Agora, vamos calcular a soma de nosso fi:  
+
+```{r, message=FALSE, warning=FALSE}
+soma_fi <- sum(tabela_freq_albumina_t)
+soma_fi
+```
+Aqui, para somar a nossa frequência absoluta da classe (fi) de todas as frequências, basta utilizar a função ``sum`` e incluir o vetor relacionado a frequência absoluta da classe.  
+  
+Agora, com nossos vetores *soma_fixi*, *fixi_qudrado* e *soma_fi* preparados, podemos realizar o cálculo da variância:  
+
+```{r, message=FALSE, warning=FALSE}
+variancia_classes <- (sum(fixi_quadrado - ((soma_fixi)^2 / soma_fi)) / 
+                        (soma_fi - 1))
+variancia_classes
+```
+De acordo com a fórmula para calcular a variância para dados agrupados em classes, e a fórmula criada aqui, para o Rstudio, vamos identificar os passos:  
+
+* **Passo 1 **: Primeiro, nós abrimos nossa fórmula com a função ``sum``, pois queremos que ao final, ocorra a soma de todos os valores calculados ali dentro. Em seguida, atribuimos o vetor referente a primeira parte da fórmula matemática ($\sum_{i=1}^{n}fixi^2$) que é *fixi_quadrado* e subtraímos pelo segundo passo da fórmula.  
+
+* **Passo 2**: O segundo passo da fórmula matemática desta variância, se refere a $\frac{(\sum_{i=1}^{n} fixi)^2}{\sum_{i=1}^{n} fi}$. Para isso, nós atribuimos o vetor *soma_fixi* que correspondia a somatória de fixi, elevamos ao quadrado (`^2`) e dividmos pelo vetor *soma_fi* que corresponde a somatória de fi.  
+
+* **Passo 3**: Por fim, seguindo a lógica da fórmula matemática, nós dividimos o resultado dos passos anteriores por $\sum_{i=1}^{n} fi - 1$ que corresponde ao nosso vetor *soma_fi* menos (-) 1.  
+
+O resultado de tudo isso é a variância para dados agrupados em classe, que neste exemplo foi igual a 0.06416667
+
+
 </div>
