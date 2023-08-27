@@ -757,7 +757,171 @@ De acordo com a fórmula para calcular a variância para dados agrupados em clas
 
 * **Passo 3**: Por fim, seguindo a lógica da fórmula matemática, nós dividimos o resultado dos passos anteriores por $\sum_{i=1}^{n} fi - 1$ que corresponde ao nosso vetor *soma_fi* menos (-) 1.  
 
-O resultado de tudo isso é a variância para dados agrupados em classe, que neste exemplo foi igual a 0.06416667
+O resultado de tudo isso é a variância para dados agrupados em classe, que neste exemplo foi igual a 0.06416667.  
+  
+## Desvio padrão  
+O desvio padrão, nada mais é que a raiz quadrada da variância. Sua fórmula matemática é representada por: 
+
+$$\sqrt{s^2} = \sqrt{\frac{ \sum_{i=1}^{n}(xi - \bar{x})^2}{n -1}} = \sqrt{\frac{\sum_{i=1}^{n} (\frac{\sum_{i=1}^{n} xi}{n})^2}{n -1}}$$
+No R, podemos calcular o desvio padrão através da função ``sd``.
+
+```{r, message=FALSE, warning=FALSE}
+sd_exemplo <- c(20, 30, 40, 50, 60, 70, 80)
+
+desvio_padrao <- sd(sd_exemplo)
+
+desvio_padrao
+```
+## Desvio Padrão para dados agrupados em classes  
+
+Para calcular o desvio padrão para dados agrupados em clases, partimos da mesma lógica do desvio padrão, porém agora aplicado a fórmula para dados agrupados em classes:  
+
+$$s = \sqrt{\frac{\sum_{i=1}^{n} fixi^2 - \frac{(\sum_{i=1}^{n} fixi)^2}{\sum_{i=1}^{n} fi}}{\sum_{i=1}^{n} fi - 1}}$$
+
+Perceba que, a única diferença é a adição da raiz quadratíca na fórmula que utilizamos para variância de dados agrupados em classes. Portanto, para calcular o desvio padrão aqui, só precisamos utilizar a função `sqrt` no vetor utilizado para calcular a variância dedados agrupados em classes no exemplo anterior.  
+
+```{r, message=FALSE, warning=FALSE}
+sd_classes <- sqrt(variancia_classes)
+
+sd_classes
+```
+O resultado será o desvio padrão.  
+
+## Coeficiente de Variação (CV)  
+
+O coeficiente de variação é uma medida de dispersão relativa que expressa o desvio padrão (s) em porcentagem da média ($\bar{x}$). Temos que, quanto mais alto o CV, maior será a dispersão dos dados em relação à média (dispersão relativa alta) e, quanto mais baixo o CV, menor será a dispersão dos dados em relação a média (dispersão relativa baixa).  
+A fórmula matemática do coeficiente de variação é:  
+
+$$CV = \frac{s}{\bar{x}} * 100$$
+
+Com base na fórmula, no RStudio, podemos calcular o coeficiente de variação a partir da divisão entre o resultado do desvio padrão, pela média, multiplicado por 100 (desvio_padrao / media) * 100.  
+Vamos criar um exemplo rápido aqui de dados não agrupados, mas que também pode ser aplicado a dados agrupados, basta seguir os passos anteriores relacionados.  
+
+```{r, message=FALSE, warning=FALSE}
+cv_exemplo <- c(20, 30, 40, 50, 60, 70, 80)
+
+media_cv <- mean(cv_exemplo)
+media_cv
+
+desvio_padrao_cv <- sd(cv_exemplo)
+desvio_padrao_cv
+
+coef_variacao <- (desvio_padrao_cv / media_cv) * 100
+
+coef_variacao
+```
+Neste exemplo, nós criamos um vetor contendo 7 dados distintos, em seguida calculamos a média deste vetor através da função `mean`, calculamos o desvio padrão a partir da função `sd` e por fim, criamos uma variável onde dividimos o resultado do desvio padrão, contido no vetor *desvio_padrao_cv* pelo resultado de média resultante do vetor *media_cv* e múltiplicamos por 100. O resultado de 43.204 é o nosso coeficiente de variação.  
+
+## Erro padrão da Média (EP)  
+
+O erro padrão da média, é uma medida que informa a precisão em que a média da população foi estimada. Sua fórmula matemática é dada por:  
+
+$$s(\bar{x}) = s\hat{m} = EP = \frac{s}{\sqrt{n}}$$
+* $s(\bar{x})$: erro padrão;  
+
+* s = desvio padrão; 
+
+* n = tamanho da amostra.  
+
+Para exemplificar, vamos utilizar o mesmo conjunto de dados do exemplo anterior:  
+
+```{r, message=FALSE, warning=FALSE}
+ep_exemplo <- c(20, 30, 40, 50, 60, 70, 80)
+
+tamanho_amostra_ep <- length(ep_exemplo)
+tamanho_amostra_ep
+
+media_ep <- mean(ep_exemplo)
+media_ep
+
+desvio_padrao_ep <- sd(ep_exemplo)
+desvio_padrao_ep
+
+erro_padrao_media <- desvio_padrao_ep / sqrt(tamanho_amostra_ep)
+erro_padrao_media
+```
+Neste exemplo, primeiro nós criamos um vetor contendo 7 dados distintos, em seguida utilizamos a função `length` para descobrir o tamanho da amostra (n), calculamos a média dos dados a partir da função `mean`, calculamos o desvio padrão dos dados a partir da função `sd`, e por fim, criamos uma variável dividindo o vetor referente ao resultado do desvio padrão (*desvio_padrao_ep*), pela raiz quadrada do vetor referente ao resultado do tamanho da amostra (*erro_padrao_media*). O resultado 8.164 é o nosso erro padrão da média.  
+
+### Apresentando os dados Graficamente  
+
+Uma forma interessante de apresentar os dados de um erro padrão da média, é através de gráficos. Para isso nós podemos criar um gráfico de barras com as linhas de erro a partir do nosso exemplo.
+
+```{r, message=FALSE, warning=FALSE}
+# Carregando a biblioteca ggplot2
+library(ggplot2)
+
+# Criando um data frame com todas as medidas
+data_medidas <- data.frame(Medida = c("Media", "Desvio Padrao", "Erro Padrao da Media"),
+                   Valor = c(media_ep, desvio_padrao_ep, erro_padrao_media))
+
+# Criando o gráfico de barras com linhas de erro
+plot_ep_s <- ggplot(data_medidas, aes(x = Medida, y = Valor)) +
+     geom_bar(stat = "identity", fill = "#ff8c1a") +
+     geom_errorbar(aes(ymin = Valor - erro_padrao_media, ymax = Valor + erro_padrao_media), width = 0.4) +
+     labs(y = "Valor", title = "Comparação de Medidas") +
+     theme_minimal()
+
+plot_ep_s
+
+```
+
+Vamos entender os passos da criação deste gráfico:  
+
+**Passo 1**:  
+
+* Carregamos a biblioteca *ggplot2* que será responsável por plotar nosso gráfico;  
+
+**Passo 2 **:  
+
+* Criamos um data frame a partir da função `data.frame`. O objeto *Medida* contém os nomes que queremos dar aos nosso objetos, enquanto que o objeto *Valor* possui os vetores criados anteriormente para calcular a media, desvio padrão e erro padrão da média do nosso exemplo.  
+  
+**Passo 3**:
+
+* Para criar o gráfico, primeiro criamos um objeto e abrimos com a função `ggplot`, em seguida adicionamos o nome do data frames que queremos criar um gráfico.  
++ A  função `aes` (aesthetic mapping) é utilizada para mapear as variáveis do nosso conjunto de dados, dessa forma, é a partir dela que definimos as configurações do gráfico;  
++ Definimos os eixos x para medida e y para valor;  
++ A partir da função `geom_bar(stat = "identity")` nós criamos as barras do gráfico de acordo com os valores presentes no data frame;  
++ Definimos a cor de nosso gráfico com a função `fill`. A cor pode ser definida de várias formas.  
++ COm a função `geom_error_bar`, nós adicionamos as linhas (barras) do erro padrão da média. Utilizamos o argumento `ymin` para especificar a extremidade inferior da linha de erro e, o argumento `ymax` para especificar a extremidade superior da linha de erro;  
+  
+**Extra**:  
+
+*  O argumento `width` serve para definir a largura do nosso gráfico;  
++ O argumento `labs(y ="")` define o nome que queremos dar no eixo y; 
++ O argfumento `title` define o título que queremos apresentar no gráfico;  
++ Por fim, o argumento `theme_minimal()` é um dos muitos estilos possíveis para se aplificar em um gráfico.  
+  
+## Quartis e intervalo interquartífico  
+
+Os Quartis são valores que dividem seu conjunto de dados em quatro partes.  
+
+* Dentro do primeiro quartil (Q1), é separado o quarto (25%) referente aos dados com valores menores que os demais;  
+
+* O segundo quartil (Q2), se refere a mediana que separa a metade dos dados com valores menores que os demais;  
+
+* O terceiro quartil (Q3), separa o quarto (25%) de dados com valores maiores que os demais.  
+
+Geralmente a representação dos quartis e os intervalos interquartíficos é apresentado através de um gráfico denominado **boxplot** (gráfico de caixas) e, podemos criar este gráfico de várias maneiras através do R. Vamos ver aqui, um exemplo utilizando a função `boxplot` do R Base: 
+
+```{r, message=FALSE, warning=FALSE}
+#Criando o conjunto de dados
+
+exemplo_boxplot <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+# Criando o boxplot
+boxplot(exemplo_boxplot)
+
+```
+  
+
+De forma simples, utilizando a função `boxplot` presente no R base, nós fizemos um boxplot. Seguindo a lógica dos quartis, a linha inferior representa o primeiro quartil, a linha média representa o segundo quartil e a linha superior representa o terceiro quartil.  
+Lembrando que, essa á apenas uma opção simples de criar um boxplot, existem diversas outras forma de construção do mesmo, utilizando por exemplo a biblioteca *gggplo2*.  
+
+# Fim do módulo
+
+Neste módulo, nós vimos as diferentes formas de calcular medidas de posição e dispersão através do Rstudio. Espero que de alguma forma, este tutorial tenha sido útil para você.  
+Nos próximos tutoriais iremos nos aprofundar sobre os tipos de correlação e regressão.
+
 
 
 </div>
