@@ -19,10 +19,6 @@ output:
 ---
 <div class="text-justify"> 
 
-# Introdução ao módulo  
-  
-Este tutorial se trata de uma sequência de tutoriais que buscam trazer a integração da programação ao ambiente acadêmico, mais especificamente, o conhecimento do Software **R** com a disciplina de Bioestatística.  
-Iremos abordar aqui, as Medidas de posição utilizadas no conteúdo de bioestatística, entre elas iremos analisar, média aritmética, ponderada, geométrica e harmônica, além do conhecimento sobre Mediana e Moda.  
   
 # Medidas
   
@@ -871,19 +867,36 @@ Uma forma interessante de apresentar os dados de um erro padrão da média, é a
 # Carregando a biblioteca ggplot2
 library(ggplot2)
 
-# Criando um data frame com todas as medidas
-data_medidas <- data.frame(Medida = c("Media", "Desvio Padrao", "Erro Padrao da Media"),
-                   Valor = c(media_ep, desvio_padrao_ep, erro_padrao_media))
+# Criando os dados
+media1 <- c(1,2,3,4,5)
+media2 <- c(2,4,6,8,10)
+media3 <- c(10,20,30,40,50)
+
+# Calculando a média
+m1 <- mean(media1)
+m2 <- mean(media2)
+m3 <- mean(media3)
+
+# Calculando o Desvio Padrão
+sm1 <- sd(media1)
+sm2 <- sd(media2)
+sm3 <- sd(media3)
+
+#Criando o Data.Frame
+data_medidas <- data.frame(Medida = c("m1", "m2", "m3"),
+                           Valor = c(m1, m2, m3),
+                           Sd = c(sm1, sm2, sm3))
 
 # Criando o gráfico de barras com linhas de erro
+
 plot_ep_s <- ggplot(data_medidas, 
                     aes(x = Medida, y = Valor)) +
-     geom_bar(stat = "identity", fill = "#ff8c1a") +
-     geom_errorbar(aes(ymin = Valor - erro_padrao_media, 
-                       ymax = Valor + erro_padrao_media), 
-                   width = 0.4) +
-     labs(y = "Valor", title = "Comparação de Medidas") +
-     theme_minimal()
+  geom_bar(stat = "identity", fill = "#ff8c1a") +
+  geom_errorbar(aes(ymin = Valor - Sd, 
+                    ymax = Valor + Sd), 
+                width = 0.4) +
+  labs(y = "Valor", title = "Comparacao de Medidas") +
+  theme_minimal()
 
 plot_ep_s
 
@@ -895,9 +908,13 @@ Vamos entender os passos da criação deste gráfico:
 
 * Carregamos a biblioteca *ggplot2* que será responsável por plotar nosso gráfico;  
 
+* **Passo 2**:  
+
+* Criamos três vetores para compor o nosso exemplo, e em seguida, criamos vetores separados de cada um deles para calcular a média e o desvio padrão.
+
 **Passo 2 **:  
 
-* Criamos um data frame a partir da função `data.frame`. O objeto *Medida* contém os nomes que queremos dar aos nosso objetos, enquanto que o objeto *Valor* possui os vetores criados anteriormente para calcular a media, desvio padrão e erro padrão da média do nosso exemplo.  
+* Criamos um data frame a partir da função `data.frame`. O objeto *Medida* contém os nomes que queremos dar aos nosso objetos, enquanto que o objeto *Valor* possui os vetores criados anteriormente para calcular a media, o objeto **Sd** possui desvio padrão .  
   
 **Passo 3**:
 
@@ -940,11 +957,6 @@ boxplot(exemplo_boxplot)
 
 De forma simples, utilizando a função `boxplot` presente no R base, nós fizemos um boxplot. Seguindo a lógica dos quartis, a linha inferior representa o primeiro quartil, a linha média representa o segundo quartil e a linha superior representa o terceiro quartil.  
 Lembrando que, essa á apenas uma opção simples de criar um boxplot, existem diversas outras forma de construção do mesmo, utilizando por exemplo a biblioteca *gggplot2*.  
-
-# Fim do módulo
-
-Neste módulo, nós vimos as diferentes formas de calcular medidas de posição e dispersão através do Rstudio. Espero que de alguma forma, este tutorial tenha sido útil para você.  
-Nos próximos tutoriais iremos nos aprofundar sobre os tipos de correlação e regressão.
 
 
 
